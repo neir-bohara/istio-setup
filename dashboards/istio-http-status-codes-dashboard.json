@@ -1,0 +1,1381 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": null,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "2XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "4XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "5XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "C"
+        }
+      ],
+      "title": "HTTP Status Codes by Service (Requests per Second)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.1
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "gradient"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "5XX Rate"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "2XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "4XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "5XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "C"
+        }
+      ],
+      "title": "Current Request Rates by Service",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "2XX - {{destination_service_name}} ({{destination_service_namespace}})": 2,
+              "4XX - {{destination_service_name}} ({{destination_service_namespace}})": 3,
+              "5XX - {{destination_service_name}} ({{destination_service_namespace}})": 4
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "Value #A": "2XX Rate",
+              "Value #B": "4XX Rate",
+              "Value #C": "5XX Rate"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": null,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": ["sum", "lastNotNull"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "2XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "4XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name)",
+          "format": "time_series",
+          "legendFormat": "5XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "C"
+        }
+      ],
+      "title": "Total HTTP Status Codes (Count)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2XX Rate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "thresholds": [
+                    {
+                      "color": "green",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "4XX Rate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "type": "color-background",
+                "value": {
+                  "type": "color-background",
+                  "thresholds": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5XX Rate"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "thresholds": [
+                    {
+                      "color": "red",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "5XX Rate"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "2XX Rate",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "4XX Rate",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[5m])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "5XX Rate",
+          "refId": "C"
+        }
+      ],
+      "title": "HTTP Status Codes Summary Table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "request_url": 2,
+              "2XX Rate": 3,
+              "4XX Rate": 4,
+              "5XX Rate": 5
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "request_url": "Endpoint",
+              "Value #A": "2XX Rate",
+              "Value #B": "4XX Rate",
+              "Value #C": "5XX Rate"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "5XX Total"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "2XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "4XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "5XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "C"
+        }
+      ],
+      "title": "Total Request Counts",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "request_url": 2,
+              "2XX - {{destination_service_name}} ({{destination_service_namespace}})": 3,
+              "4XX - {{destination_service_name}} ({{destination_service_namespace}})": 4,
+              "5XX - {{destination_service_name}} ({{destination_service_namespace}})": 5
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "request_url": "Endpoint",
+              "Value #A": "2XX Total",
+              "Value #B": "4XX Total",
+              "Value #C": "5XX Total"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 5
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "5XX %"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(sum(increase(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url) / sum(increase(istio_requests_total{destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)) * 100",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "2XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(sum(increase(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url) / sum(increase(istio_requests_total{destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)) * 100",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "4XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(sum(increase(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url) / sum(increase(istio_requests_total{destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)) * 100",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "5XX - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "C"
+        }
+      ],
+      "title": "Request Percentage Breakdown",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "request_url": 2,
+              "2XX - {{destination_service_name}} ({{destination_service_namespace}})": 3,
+              "4XX - {{destination_service_name}} ({{destination_service_namespace}})": 4,
+              "5XX - {{destination_service_name}} ({{destination_service_namespace}})": 5
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "request_url": "Endpoint",
+              "Value #A": "2XX %",
+              "Value #B": "4XX %",
+              "Value #C": "5XX %"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Count"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, response_code, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{response_code}} - {{destination_service_name}} ({{destination_service_namespace}})",
+          "refId": "A"
+        }
+      ],
+      "title": "Detailed Request Counts by Response Code",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "request_url": 2,
+              "response_code": 3,
+              "Value": 4
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "request_url": "Endpoint",
+              "response_code": "Response Code",
+              "Value": "Count"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient",
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*2XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*4XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*5XX.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "5XX Count"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"2..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "2XX - {{request_url}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"4..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "4XX - {{request_url}}",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(increase(istio_requests_total{response_code=~\"5..\",destination_service_namespace=~\"$namespace\"}[$__range])) by (destination_service_namespace, destination_service_name, request_url)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "5XX - {{request_url}}",
+          "refId": "C"
+        }
+      ],
+      "title": "Request Paths by Status Code",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "destination_service_namespace": 0,
+              "destination_service_name": 1,
+              "request_url": 2,
+              "2XX - {{request_url}}": 3,
+              "4XX - {{request_url}}": 4,
+              "5XX - {{request_url}}": 5
+            },
+            "renameByName": {
+              "destination_service_namespace": "Namespace",
+              "destination_service_name": "Service",
+              "request_url": "Request Path",
+              "Value #A": "2XX Count",
+              "Value #B": "4XX Count",
+              "Value #C": "5XX Count"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["istio", "http", "status-codes", "monitoring"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus"
+        },
+        "definition": "label_values(istio_requests_total, destination_service_namespace)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Namespace",
+        "multi": true,
+        "name": "namespace",
+        "options": [],
+        "query": {
+          "query": "label_values(istio_requests_total, destination_service_namespace)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": ".*",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Istio HTTP Status Codes Dashboard",
+  "uid": "istio-http-status-codes",
+  "version": 1,
+  "weekStart": ""
+}
