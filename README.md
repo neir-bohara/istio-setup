@@ -31,6 +31,8 @@ helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 ```
 
+> **Note:** This guide installs Istio version **1.27.0** (stable). To check available versions, run: `helm search repo istio --versions`
+
 ### 2. Create the system namespace
 
 ```bash
@@ -40,13 +42,17 @@ kubectl create namespace istio-system
 ### 3. Install Istio Base (CRDs)
 
 ```bash
-helm install istio-base istio/base -n istio-system --set defaultRevision=default
+helm install istio-base istio/base -n istio-system \
+  --version 1.27.0 \
+  --set defaultRevision=default
 ```
 
 ### 4. Install Istio Discovery (Control Plane)
 
 ```bash
-helm install istiod istio/istiod -n istio-system --wait \
+helm install istiod istio/istiod -n istio-system \
+  --version 1.27.0 \
+  --wait \
   --set meshConfig.accessLogFile=/dev/stdout \
   --set meshConfig.accessLogEncoding=JSON
 ```
@@ -60,6 +66,7 @@ This step creates the LoadBalancer on DigitalOcean. We create a separate namespa
 ```bash
 kubectl create namespace istio-ingress
 helm install istio-ingress istio/gateway -n istio-ingress \
+  --version 1.27.0 \
   --set service.type=LoadBalancer \
   --set service.externalTrafficPolicy=Local \
   --set service.annotations."service\.beta\.kubernetes\.io/do-loadbalancer-name"="istio-ingress-lb" \
@@ -109,7 +116,7 @@ Kiali requires Prometheus to visualize the mesh.
 #### Install Prometheus
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/prometheus.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.27/samples/addons/prometheus.yaml
 ```
 
 > **Note:** Alternatively, you can use the stable `prometheus-community/prometheus` helm chart, but the sample yaml is the quickest way to get started compatible with Istio.
@@ -134,7 +141,7 @@ You have two options:
 **Option 1: Install Grafana with Istio Dashboards (Recommended)**
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.24/samples/addons/grafana.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.27/samples/addons/grafana.yaml
 ```
 
 > This installs Grafana with all Istio dashboards pre-configured and connected to Prometheus.
